@@ -1015,7 +1015,13 @@
       destroy-on-close
       class="member-dialog"
     >
-      <div class="flex justify-end mb-4">
+      <div class="flex justify-end mb-4 space-x-2">
+        <el-button type="primary" @click="handleImportMember">
+          <el-icon class="mr-1"><Upload /></el-icon>导入
+        </el-button>
+        <el-button type="primary" @click="handleExportMember">
+          <el-icon class="mr-1"><Download /></el-icon>导出
+        </el-button>
         <el-button type="primary" @click="startAddMember">
           <el-icon class="mr-1"><Plus /></el-icon>新建
         </el-button>
@@ -5621,6 +5627,97 @@ watch(() => currentSchedule.value.data.format, async (newFormat, oldFormat) => {
     }
   }
 });
+
+// 导入成员
+const handleImportMember = () => {
+  // 创建文件输入元素
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
+  input.onchange = async (e) => {
+    try {
+      const file = e.target.files[0]
+      if (!file) return
+      
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        try {
+          const importedMembers = JSON.parse(e.target.result)
+          
+          // 验证导入的数据格式
+          if (!Array.isArray(importedMembers)) {
+            throw new Error('导入的文件格式不正确')
+          }
+          
+          // 从 localStorage 获取现有成员
+          const existingMembers = JSON.parse(localStorage.getItem('streamers') || '[]')
+          
+          // 合并成员并去重
+          const mergedMembers = [...existingMembers]
+          for (const member of importedMembers) {
+            if (!mergedMembers.some(m => m.id === member.id)) {
+              mergedMembers.push(member)
+            }
+          }
+          
+          // 保存回 localStorage
+          localStorage.setItem('streamers', JSON.stringify(mergedMembers))
+          
+          // 更新成员列表并按创建时间倒序排序
+          streamers.value = mergedMembers.sort((a, b) => {
+            return new Date(b.updateTime || b.id) - new Date(a.updateTime || a.id)
+          })
+          
+          ElMessage({
+            type: 'success',
+            message: '成员导入成功'
+          })
+        } catch (error) {
+          console.error('解析导入文件时发生错误:', error)
+          ElMessage({
+            type: 'error',
+            message: '导入失败：文件格式不正确'
+          })
+        }
+      }
+      reader.readAsText(file)
+    } catch (error) {
+      console.error('导入成员时发生错误:', error)
+      ElMessage({
+        type: 'error',
+        message: '导入成员时发生错误'
+      })
+    }
+  }
+  input.click()
+}
+
+// 导出成员
+const handleExportMember = () => {
+  try {
+    const membersJson = JSON.stringify(streamers.value, null, 2)
+    const blob = new Blob([membersJson], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `成员列表_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '')}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    
+    ElMessage({
+      type: 'success',
+      message: '成员导出成功'
+    })
+  } catch (error) {
+    console.error('导出成员时发生错误:', error)
+    ElMessage({
+      type: 'error',
+      message: '导出成员时发生错误'
+    })
+  }
+}
 
 </script>
 
