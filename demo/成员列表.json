@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1741511534922,
+    "name": "又一",
+    "description": "Yoyi",
+    "avatar": null,
+    "logo": null,
+    "logoText": "",
+    "isLogoImage": false,
+    "useCustomColor": true,
+    "color": "#E3BA09",
+    "updateTime": 1741511534922
+  },
+  {
+    "id": 1741511493594,
+    "name": "沐霂",
+    "description": "Queenie",
+    "avatar": "",
+    "logo": null,
+    "logoText": "",
+    "isLogoImage": false,
+    "useCustomColor": true,
+    "color": "#A1D29A",
+    "updateTime": 1741511493594
+  },
+  {
+    "id": 1741511432619,
+    "name": "梨安",
+    "description": "Lian",
+    "avatar": null,
+    "logo": null,
+    "logoText": "",
+    "isLogoImage": false,
+    "useCustomColor": true,
+    "color": "#E38691",
+    "updateTime": 1741511432619
+  },
+  {
+    "id": 1741511314508,
+    "name": "恬豆",
+    "description": "Bekki",
+    "avatar": "",
+    "logo": null,
+    "logoText": "",
+    "isLogoImage": false,
+    "useCustomColor": true,
+    "color": "#A7C9D3",
+    "updateTime": 1741511388904
+  }
+]
