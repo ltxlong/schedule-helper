@@ -1,0 +1,326 @@
+[
+  {
+    "id": 1741504453231,
+    "name": "一周排班表_四禧丸子",
+    "description": "base",
+    "createTime": "2025-03-09T07:14:13.231Z",
+    "data": {
+      "schedule": {
+        "data": {
+          "title": "一周排班表",
+          "format": "current_week",
+          "template": "",
+          "dateRange": "2025.03.03–2025.03.09",
+          "logoPosition": "left",
+          "logoStreamers": [
+            "梨安",
+            "沐霂",
+            "恬豆",
+            "又一"
+          ],
+          "source": "template"
+        },
+        "style": {
+          "font": "AlibabaSans-Regular",
+          "backgroundColor": "#ffffff",
+          "themeColor": "#377639",
+          "backgroundImage": null,
+          "themeStyle": "top-weekday",
+          "weekdayLayout": "single",
+          "borderWidth": "2",
+          "titleFontSize": "50px"
+        }
+      },
+      "weekScheduleData": [
+        [
+          {
+            "time": "",
+            "type": "rest",
+            "streamer": "",
+            "streamers": [],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": true,
+            "style": {
+              "fontSize": "42px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "none",
+            "logoStreamer": ""
+          },
+          {
+            "time": "18:30",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "又一"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "又一"
+          },
+          {
+            "time": "18:30",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "恬豆"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "恬豆"
+          },
+          {
+            "time": "18:30",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "沐霂"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "沐霂"
+          },
+          {
+            "time": "20:00",
+            "type": "custom",
+            "streamer": "",
+            "streamers": [],
+            "customContent": "梨 & 又",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "梨安"
+          },
+          {
+            "time": "20:00",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "恬豆"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "恬豆"
+          },
+          {
+            "time": "18:30",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "又一"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "又一"
+          }
+        ],
+        [
+          {
+            "style": {}
+          },
+          {
+            "time": "21:00",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "沐霂"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "沐霂"
+          },
+          {
+            "time": "21:00",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "梨安"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "梨安"
+          },
+          {
+            "time": "21:00",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "又一"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "又一"
+          },
+          {
+            "style": {}
+          },
+          {
+            "style": {}
+          },
+          {
+            "time": "21:00",
+            "type": "manual",
+            "streamer": "",
+            "streamers": [
+              "沐霂"
+            ],
+            "customContent": "",
+            "isImage": false,
+            "imageUrl": "",
+            "showTime": true,
+            "showAvatar": false,
+            "useShortText": false,
+            "style": {
+              "fontSize": "20px",
+              "colorMode": "default",
+              "textColor": "#000000",
+              "bgColorMode": "default",
+              "backgroundColor": "#ffffff"
+            },
+            "logoType": "custom",
+            "logoStreamer": "沐霂"
+          }
+        ]
+      ],
+      "monthScheduleData": [],
+      "dragOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "scale": 100,
+      "mergedCellsData": [
+        [
+          "0,0",
+          [
+            "1,0"
+          ]
+        ],
+        [
+          "0,4",
+          [
+            "1,4"
+          ]
+        ],
+        [
+          "0,5",
+          [
+            "1,5"
+          ]
+        ]
+      ]
+    }
+  }
+]
