@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 重置基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 确保根元素和body有全屏高度 */
+:root,
+html,
+body,
+#app {
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @apply bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen m-0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+@layer base {
+  :root {
+    --primary-color: var(--el-color-primary);
+    --text-color: var(--el-text-color-primary);
+    --border-color: var(--el-border-color);
+    --bg-color: var(--el-bg-color);
+  }
+
+  html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen m-0;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg shadow-md hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 ease-in-out;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-white text-gray-700 rounded-lg shadow-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 ease-in-out border border-gray-200;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg shadow-md hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 ease-in-out;
+  }
+
+  .input-primary {
+    @apply mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 ease-in-out;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200 ease-in-out border border-gray-100;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-xl shadow-2xl p-6 max-w-3xl w-full mx-auto transform transition-all duration-300 ease-in-out;
+  }
+
+  .sidebar {
+    @apply fixed inset-y-16 bg-white shadow-xl transition-transform duration-300 ease-in-out z-30 border-r border-gray-200;
+  }
+
+  .sidebar-button {
+    @apply absolute top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-3 shadow-lg hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 ease-in-out;
+  }
+}
+
+/* Element Plus 覆盖样式 */
+:deep(.el-button) {
+  @apply rounded-lg;
+}
+
+:deep(.el-input__wrapper) {
+  @apply rounded-lg;
+}
+
+:deep(.el-card) {
+  @apply rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200;
+}
+
+/* 自定义全局样式 */
+.page-container {
+  @apply min-h-screen bg-gradient-to-br from-gray-50 to-gray-100;
+}
+
+.content-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-title {
+  @apply text-xl font-semibold text-gray-900 mb-4;
+}
+
+/* 通用样式 */
+.text-center {
+  text-align: center;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mb-8 {
+  margin-bottom: 32px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* 自定义组件样式 */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  padding: 20px;
+  flex: 1;
+}
+
+/* 删除 SweetAlert2 自定义样式部分 */ 
