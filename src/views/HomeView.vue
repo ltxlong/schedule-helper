@@ -2470,7 +2470,7 @@
                   <el-option label="16px" value="16px" />
                   <el-option label="18px" value="18px" />
                   <el-option label="20px" value="20px" />
-                  <el-option label="默认(24px)" value="24px" />
+                  <el-option label="24px" value="24px" />
                   <el-option label="30px" value="30px" />
                   <el-option label="36px" value="36px" />
                   <el-option label="42px" value="42px" />
