@@ -108,7 +108,7 @@
         <!-- 排班表区域 -->
         <el-card ref="scheduleTableRef" class="schedule-table" shadow="hover" 
           :style="{
-            fontFamily: currentSchedule.style.font,
+            '--schedule-font-family': currentSchedule.style.font,
             backgroundImage: currentSchedule.style.backgroundImage ? `url(${currentSchedule.style.backgroundImage})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
@@ -179,10 +179,13 @@
                       <template v-if="currentSchedule.style.weekdayLayout === 'single'">
                         <th v-for="(day, index) in weekDays" :key="index" 
                           class="border schedule-header"
-                          :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
+                          :style="{ 
+                            borderColor: currentSchedule.style.themeColor, 
+                            color: currentSchedule.style.themeColor
+                          }"
                           :data-cell-id="'header-' + index"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                       </template>
@@ -190,10 +193,13 @@
                         <!-- 第一行显示周一到周四 -->
                         <th v-for="(day, index) in weekDays.slice(0, 4)" :key="index" 
                           class="border schedule-header"
-                          :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
+                          :style="{ 
+                            borderColor: currentSchedule.style.themeColor, 
+                            color: currentSchedule.style.themeColor
+                          }"
                           :data-cell-id="'header-' + index"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                       </template>
@@ -498,17 +504,17 @@
                               >
                                 <template v-if="weekScheduleData[row - 1][dayIndex - 1]?.logoStreamer">
                                   <img 
-                                    v-if="getStreamerLogo(weekScheduleData[row - 1][dayIndex - 1].logoStreamer)"
-                                    :src="getStreamerLogo(weekScheduleData[row - 1][dayIndex - 1].logoStreamer)"
+                                    v-if="getStreamerLogo(weekScheduleData[row - 1][dayIndex - 1]?.logoStreamer)"
+                                    :src="getStreamerLogo(weekScheduleData[row - 1][dayIndex - 1]?.logoStreamer)"
                                     class="logo-image"
                                     alt="Logo"
                                   />
                                   <div 
                                     v-else 
                                     class="logo-text"
-                                    :style="getLogoStyle(weekScheduleData[row - 1][dayIndex - 1].logoStreamer)"
+                                    :style="getLogoStyle(weekScheduleData[row - 1][dayIndex - 1]?.logoStreamer)"
                                   >
-                                    {{ getStreamerLogoText(weekScheduleData[row - 1][dayIndex - 1].logoStreamer) }}
+                                    {{ getStreamerLogoText(weekScheduleData[row - 1][dayIndex - 1]?.logoStreamer) }}
                                   </div>
                                 </template>
                               </div>
@@ -523,7 +529,7 @@
                           :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                           :data-cell-id="'header-' + (index + 4)"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
@@ -822,7 +828,7 @@
                       :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                       :data-cell-id="'header-' + day"
                     >
-                      周{{ day }}
+                      <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">周{{ day }}</div>
                     </th>
                   </tr>
                 </thead>
@@ -1405,23 +1411,39 @@
             <el-option label="80px" value="80px" />
           </el-select>
         </el-form-item>
+
+        <!-- 添加星期字体大小设置 -->
+        <el-form-item label="星期大小">
+          <el-select v-model="newScheduleForm.style.weekdayFontSize" class="w-full">
+            <el-option label="12px" value="12px" />
+            <el-option label="14px" value="14px" />
+            <el-option label="一般 (16px)" value="16px" />
+            <el-option label="18px" value="18px" />
+            <el-option label="20px" value="20px" />
+            <el-option label="22px" value="22px" />
+            <el-option label="24px" value="24px" />
+            <el-option label="26px" value="26px" />
+            <el-option label="28px" value="28px" />
+            <el-option label="30px" value="30px" />
+          </el-select>
+        </el-form-item>
         
         <el-form-item label="字体">
           <el-select v-model="newScheduleForm.style.font" class="w-full">
             <el-option-group label="阿里巴巴惠普体">
-              <el-option label="阿里巴巴惠普体 常规" value="AlibabaSans-Regular" />
+              <el-option label="阿里巴巴惠普体 特细" value="AlibabaSans-Thin" />
               <el-option label="阿里巴巴惠普体 细体" value="AlibabaSans-Light" />
+              <el-option label="阿里巴巴惠普体 常规" value="AlibabaSans-Regular" />
               <el-option label="阿里巴巴惠普体 中等" value="AlibabaSans-Medium" />
               <el-option label="阿里巴巴惠普体 粗体" value="AlibabaSans-Bold" />
-              <el-option label="阿里巴巴惠普体 特粗" value="AlibabaSans-Heavy" />
               <el-option label="阿里巴巴惠普体 黑体" value="AlibabaSans-Black" />
             </el-option-group>
             <el-option-group label="华为鸿蒙Sans">
-              <el-option label="鸿蒙Sans 常规" value="HarmonyOS_Sans_Regular" />
+              <el-option label="鸿蒙Sans 特细" value="HarmonyOS_Sans_Thin" />
               <el-option label="鸿蒙Sans 细体" value="HarmonyOS_Sans_Light" />
+              <el-option label="鸿蒙Sans 常规" value="HarmonyOS_Sans_Regular" />
               <el-option label="鸿蒙Sans 中等" value="HarmonyOS_Sans_Medium" />
               <el-option label="鸿蒙Sans 粗体" value="HarmonyOS_Sans_Bold" />
-              <el-option label="鸿蒙Sans 特细" value="HarmonyOS_Sans_Thin" />
               <el-option label="鸿蒙Sans 黑体" value="HarmonyOS_Sans_Black" />
             </el-option-group>
           </el-select>
@@ -1656,11 +1678,10 @@
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
                             color: currentViewTemplate?.data?.schedule?.style?.themeColor,
-                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px',
-                            fontSize: currentViewTemplate?.data?.schedule?.style?.fontSize
+                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px'
                           }"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                       </template>
@@ -1671,11 +1692,10 @@
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
                             color: currentViewTemplate?.data?.schedule?.style?.themeColor,
-                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px',
-                            fontSize: currentViewTemplate?.data?.schedule?.style?.fontSize
+                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px'
                           }"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                       </template>
@@ -1963,11 +1983,10 @@
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
                             color: currentViewTemplate?.data?.schedule?.style?.themeColor,
-                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px',
-                            fontSize: currentViewTemplate?.data?.schedule?.style?.fontSize
+                            borderWidth: currentViewTemplate?.data?.schedule?.style?.borderWidth + 'px'
                           }"
                         >
-                          <div class="font-medium">{{ day.name }}</div>
+                          <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
                           <div class="text-sm opacity-75">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
@@ -2163,7 +2182,7 @@
                         class="border schedule-header"
                         :style="{ borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, color: currentViewTemplate?.data?.schedule?.style?.themeColor }"
                       >
-                        周{{ day }}
+                        <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">周{{ day }}</div>
                       </th>
                     </tr>
                   </thead>
@@ -2609,7 +2628,8 @@ const currentSchedule = ref({
     themeStyle: 'top-weekday',
     weekdayLayout: 'single',
     borderWidth: '1',
-    titleFontSize: '24px'
+    titleFontSize: '24px',
+    weekdayFontSize: '16px' // 添加星期字体大小默认值
   }
 })
 
@@ -3492,7 +3512,8 @@ const newScheduleForm = ref({
     weekdayLayout: 'single',
     backgroundImage: null,
     borderWidth: '1',
-    titleFontSize: '24px'
+    titleFontSize: '24px',
+    weekdayFontSize: '16px' // 添加星期字体大小设置
   }
 })
 
@@ -4594,7 +4615,8 @@ const editSchedule = () => {
     title: currentSchedule.value.data.title,
     logoPosition: currentSchedule.value.data.logoPosition || 'none', // 加载已有的主播logo显示位置设置
     logoStreamers: currentSchedule.value.data.logoStreamers || [], // 加载已有的主播logo成员列表设置
-    style: { ...currentSchedule.value.style }
+    style: { ...currentSchedule.value.style },
+    weekdayFontSize: currentSchedule.value.style.weekdayFontSize || '16px' // 加载已有的星期字体大小设置
   };
   newScheduleDialogVisible.value = true;
 }
@@ -5722,32 +5744,38 @@ const handleExportMember = () => {
 </script>
 
 <style scoped>
-/* 添加字体声明 */
-/* 阿里巴巴惠普体 */
 
 :root {
   --el-color-primary-rgb: 64, 158, 255; /* 默认蓝色 */
 }
 
 @font-face {
-  font-family: 'AlibabaSans-Regular';
-  src: url('../assets/fonts/AlibabaSans-Regular.otf') format('opentype');
-  font-weight: normal;
+  font-family: 'AlibabaSans-Thin';
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-35-Thin.ttf') format('truetype');
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'AlibabaSans-Light';
-  src: url('../assets/fonts/AlibabaSans-Light.otf') format('opentype');
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-45-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'AlibabaSans-Regular';
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-55-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'AlibabaSans-Medium';
-  src: url('../assets/fonts/AlibabaSans-Medium.otf') format('opentype');
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-65-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -5755,23 +5783,15 @@ const handleExportMember = () => {
 
 @font-face {
   font-family: 'AlibabaSans-Bold';
-  src: url('../assets/fonts/AlibabaSans-Bold.otf') format('opentype');
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-85-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'AlibabaSans-Heavy';
-  src: url('../assets/fonts/AlibabaSans-Heavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: 'AlibabaSans-Black';
-  src: url('../assets/fonts/AlibabaSans-Black.otf') format('opentype');
+  src: url('../assets/fonts/AlibabaPuHuiTi-3-115-Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -5779,24 +5799,32 @@ const handleExportMember = () => {
 
 /* 华为鸿蒙Sans */
 @font-face {
-  font-family: 'HarmonyOS_Sans_Regular';
-  src: url('../assets/fonts/HarmonyOS_Sans_Regular.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'HarmonyOS_Sans_Thin';
+  src: url('../assets/fonts/HarmonyOS_SansSC_Thin.ttf') format('truetype');
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'HarmonyOS_Sans_Light';
-  src: url('../assets/fonts/HarmonyOS_Sans_Light.ttf') format('truetype');
+  src: url('../assets/fonts/HarmonyOS_SansSC_Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'HarmonyOS_Sans_Regular';
+  src: url('../assets/fonts/HarmonyOS_SansSC_Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'HarmonyOS_Sans_Medium';
-  src: url('../assets/fonts/HarmonyOS_Sans_Medium.ttf') format('truetype');
+  src: url('../assets/fonts/HarmonyOS_SansSC_Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -5804,23 +5832,15 @@ const handleExportMember = () => {
 
 @font-face {
   font-family: 'HarmonyOS_Sans_Bold';
-  src: url('../assets/fonts/HarmonyOS_Sans_Bold.ttf') format('truetype');
+  src: url('../assets/fonts/HarmonyOS_SansSC_Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'HarmonyOS_Sans_Thin';
-  src: url('../assets/fonts/HarmonyOS_Sans_Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: 'HarmonyOS_Sans_Black';
-  src: url('../assets/fonts/HarmonyOS_Sans_Black.ttf') format('truetype');
+  src: url('../assets/fonts/HarmonyOS_SansSC_Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -5839,6 +5859,24 @@ const handleExportMember = () => {
 /* 设置标题字体 */
 .schedule-table h2 {
   font-family: inherit;
+}
+
+/* 确保单元格内容继承字体 */
+.cell-content,
+.cell-content .text-sm,
+.cell-content .font-medium {
+  font-family: inherit;
+}
+
+/* 确保日期和星期标题继承字体 */
+.schedule-header,
+.date-header {
+  font-family: inherit;
+}
+
+/* 移除星期表头的加粗样式 */
+.schedule-header {
+  font-weight: unset;
 }
 
 .app-container {
