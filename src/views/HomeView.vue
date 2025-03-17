@@ -1673,7 +1673,7 @@
                   <thead>
                     <tr>
                       <template v-if="currentViewTemplate?.data?.schedule?.style?.weekdayLayout === 'single'">
-                        <th v-for="(day, index) in weekDays" :key="index" 
+                        <th v-for="(day, index) in previewWeekDays" :key="index" 
                           class="border schedule-header"
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
@@ -1687,7 +1687,7 @@
                       </template>
                       <template v-else>
                         <!-- 第一行显示周一到周四 -->
-                        <th v-for="(day, index) in weekDays.slice(0, 4)" :key="index" 
+                        <th v-for="(day, index) in previewWeekDays.slice(0, 4)" :key="index" 
                           class="border schedule-header"
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
@@ -1704,7 +1704,7 @@
                   <tbody>
                     <template v-if="currentViewTemplate?.data?.schedule?.style?.weekdayLayout === 'single'">
                       <tr v-for="row in 2" :key="row">
-                        <td v-for="(day, dayIndex) in weekDays" :key="dayIndex"
+                        <td v-for="(day, dayIndex) in previewWeekDays" :key="dayIndex"
                           class="border schedule-cell week-schedule"
                           :style="getCellStyle(currentViewTemplate?.data?.weekScheduleData?.[row - 1]?.[dayIndex], currentViewTemplate?.data?.schedule?.style, true)"
                           :colspan="currentViewTemplate?.data?.mergedCellsData ? getViewColSpan(row - 1, dayIndex) : 1"
@@ -1978,7 +1978,7 @@
                       </tr>
                       <!-- 第二行表头（周五到周日） -->
                       <tr>
-                        <th v-for="(day, index) in weekDays.slice(4)" :key="'second-header-' + index" 
+                        <th v-for="(day, index) in previewWeekDays.slice(4)" :key="'second-header-' + index" 
                           class="border schedule-header"
                           :style="{ 
                             borderColor: currentViewTemplate?.data?.schedule?.style?.themeColor, 
@@ -2006,7 +2006,7 @@
                       </tr>
                       <!-- 第二行周五到周日的空格子 -->
                       <tr v-for="row in 2" :key="'second-' + row">
-                        <td v-for="(day, dayIndex) in weekDays.slice(4)" :key="'second-' + dayIndex"
+                        <td v-for="(day, dayIndex) in previewWeekDays.slice(4)" :key="'second-' + dayIndex"
                           class="border schedule-cell"
                           :style="getCellStyle(currentViewTemplate?.data?.weekScheduleData?.[row - 1]?.[dayIndex + 4], currentViewTemplate?.data?.schedule?.style, true)"
                           :colspan="currentViewTemplate?.data?.mergedCellsData ? getViewColSpan(row - 1, dayIndex + 4) : 1"
@@ -2745,6 +2745,12 @@ const handleSaveTemplate = async () => {
         mergedCellsData // 保存合并单元格信息
       }
     }
+
+    // 如果是周视图，保存周的开始日期
+    if (currentSchedule.value.data.format.includes('week')) {
+      const weekDates = weekDays.value.map(day => day.date)
+      newTemplate.data.schedule.data.weekStart = weekDates[0]
+    }
     
     // 从 localStorage 获取现有模板
     const existingTemplates = JSON.parse(localStorage.getItem('scheduleTemplates') || '[]')
@@ -2826,8 +2832,8 @@ const initMonthScheduleData = (targetMonth = new Date()) => {
   // 设置日期范围
   const dateRange = `${firstDay.getFullYear()}.${String(firstDay.getMonth() + 1).padStart(2, '0')}.${String(firstDay.getDate()).padStart(2, '0')}–${lastDay.getFullYear()}.${String(lastDay.getMonth() + 1).padStart(2, '0')}.${String(lastDay.getDate()).padStart(2, '0')}`
   
-  // 只有在非编辑模式下才重新初始化月排班表数据
-  if (!isEditMode.value) {
+  // 只有在非编辑模式下 或者 才重新初始化月排班表数据
+  if (!isEditMode.value || monthScheduleData.value.length === 0) {
     monthScheduleData.value = Array(daysInMonth).fill(null).map((_, index) => {
       const currentDate = new Date(targetMonth.getFullYear(), targetMonth.getMonth(), index + 1)
       const dayOfWeek = currentDate.getDay() || 7 // 将周日(0)转换为7
@@ -3546,6 +3552,29 @@ const currentMonthWeeks = computed(() => {
   
   return weeks
 })
+
+// 添加预览周视图日期的计算属性
+const previewWeekDays = computed(() => {
+  if (!currentViewTemplate.value?.data?.schedule?.data?.format?.includes('week')) {
+    return weekDays.value;
+  }
+
+  const weekStart = currentViewTemplate.value.data.schedule.data.weekStart;
+  if (!weekStart) {
+    // 如果没有保存的weekStart，使用本周一
+    const today = new Date();
+    const monday = new Date(today);
+    const dayOfWeek = today.getDay() || 7;
+    monday.setDate(today.getDate() - dayOfWeek + 1);
+    return getWeekDays(monday);
+  }
+
+  // 使用保存的weekStart
+  const [startMonth, startDay] = weekStart.split('.').map(Number);
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), startMonth - 1, startDay);
+  return getWeekDays(startDate);
+});
 
 // 添加监听器，当格式改变时更新标题
 watch(
@@ -4328,6 +4357,22 @@ const handleUseTemplate = async (template) => {
     weekScheduleData.value = JSON.parse(JSON.stringify(template.data.weekScheduleData));
     monthScheduleData.value = JSON.parse(JSON.stringify(template.data.monthScheduleData));
     
+    // 如果是周视图且有保存的weekStart，更新weekDays
+    if (currentSchedule.value.data.format.includes('week') && currentSchedule.value.data.weekStart) {
+      const weekStart = currentSchedule.value.data.weekStart;
+      const [startMonth, startDay] = weekStart.split('.').map(Number);
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), startMonth - 1, startDay);
+      weekDays.value = getWeekDays(startDate);
+    } else if (currentSchedule.value.data.format.includes('week')) {
+      // 如果是周视图但没有weekStart，使用本周一
+      const today = new Date();
+      const monday = new Date(today);
+      const dayOfWeek = today.getDay() || 7;
+      monday.setDate(today.getDate() - dayOfWeek + 1);
+      weekDays.value = getWeekDays(monday);
+    }
+    
     // 恢复拖拽位置
     if (template.data.dragOffset) {
       dragOffset.value = JSON.parse(JSON.stringify(template.data.dragOffset));
@@ -4560,6 +4605,12 @@ const saveAsHistory = async () => {
       mergedCellsData // 保存合并单元格信息
     }
     
+    // 如果是周视图，保存周的开始和结束日期
+    if (currentSchedule.value.data.format.includes('week')) {
+      const weekStart = weekDays.value[0].date
+      history.data.data.weekStart = weekStart
+    }
+    
     // 从本地存储获取历史记录
     const histories = JSON.parse(localStorage.getItem('scheduleHistories') || '[]')
     
@@ -4635,6 +4686,29 @@ const handleRestoreHistory = async (history) => {
     // 恢复历史数据
     currentSchedule.value = JSON.parse(JSON.stringify(history.data))
     currentSchedule.value.data.source = 'history' // 设置数据来源为history
+    
+    // 如果是周视图且有保存的日期信息，更新 weekDays
+    if (currentSchedule.value.data.format.includes('week') && currentSchedule.value.data.weekStart) {
+      
+      const weekStart = currentSchedule.value.data.weekStart
+      const [startMonth, startDay] = weekStart.split('.').map(Number)
+      
+      // 计算中间日期
+      const now = new Date()
+      const startDate = new Date(now.getFullYear(), startMonth - 1, startDay)
+      const dates = []
+      
+      for (let i = 0; i < 7; i++) {
+        const currentDate = new Date(startDate)
+        currentDate.setDate(startDate.getDate() + i)
+        dates.push(currentDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' }).replace('/', '.'))
+      }
+      
+      weekDays.value = weekDays.value.map((day, index) => ({
+        name: day.name,
+        date: dates[index]
+      }))
+    }
     
     // 恢复周排班数据
     if (history.weekScheduleData) {
@@ -5176,8 +5250,13 @@ const getMonthCalendarWeeks = (monthScheduleData) => {
   
   const today = new Date()
   const year = today.getFullYear()
-  const month = today.getMonth()
-  
+  let month = today.getMonth()
+
+  // 根据格式决定是显示本月还是下个月
+  if (currentViewTemplate.value?.data?.schedule?.data?.format === 'next_month') {
+    month = month + 1
+  }
+
   // 获取当月第一天
   const firstDay = new Date(year, month, 1)
   // 获取当月最后一天
