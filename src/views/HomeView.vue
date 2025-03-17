@@ -4605,7 +4605,7 @@ const saveAsHistory = async () => {
       mergedCellsData // 保存合并单元格信息
     }
     
-    // 如果是周视图，保存周的开始和结束日期
+    // 如果是周视图，保存周的开始日期
     if (currentSchedule.value.data.format.includes('week')) {
       const weekStart = weekDays.value[0].date
       history.data.data.weekStart = weekStart
@@ -4687,7 +4687,7 @@ const handleRestoreHistory = async (history) => {
     currentSchedule.value = JSON.parse(JSON.stringify(history.data))
     currentSchedule.value.data.source = 'history' // 设置数据来源为history
     
-    // 如果是周视图且有保存的日期信息，更新 weekDays
+    // 如果是周视图且有保存的周开始日期信息，更新 weekDays
     if (currentSchedule.value.data.format.includes('week') && currentSchedule.value.data.weekStart) {
       
       const weekStart = currentSchedule.value.data.weekStart
