@@ -2764,6 +2764,11 @@ const handleSaveTemplate = async () => {
     if (currentSchedule.value.data.format.includes('week')) {
       const weekDates = weekDays.value.map(day => day.date)
       newTemplate.data.schedule.data.weekStart = weekDates[0]
+      
+      // 如果是本周，保存周偏移量
+      if (currentSchedule.value.data.format === 'current_week') {
+        newTemplate.data.schedule.data.weekOffset = currentSchedule.value.data.weekOffset || 0
+      }
     }
     
     // 从 localStorage 获取现有模板
@@ -4970,8 +4975,10 @@ const handleExportTemplates = () => {
       type: 'success',
       message: '模板导出成功'
     })
+    
   } catch (error) {
     console.error('导出模板时发生错误:', error)
+
     ElMessage({
       type: 'error',
       message: '导出模板时发生错误'
@@ -5213,13 +5220,16 @@ const getMergedDateRange = (rowIndex, cellIndex) => {
 
 // 监听格式变化，自动设置正确的主题样式
 watch(() => newScheduleForm.value.format, (newFormat) => {
+
   if (newFormat === 'month' || newFormat === 'current_month' || newFormat === 'next_month') {
     newScheduleForm.value.style.themeStyle = 'top-weekday'
     newScheduleForm.value.style.weekdayLayout = 'single' // 自动设置为一行
   }
+
   if (!isEditMode.value && !newScheduleForm.value.template) {
     newScheduleForm.value.title = newFormat === 'current_week' ? '一周排班表' : '本月排班表'
   }
+
 })
 
 // 处理页面点击事件
@@ -5286,6 +5296,7 @@ watch(() => newScheduleForm.value.template, (newTemplateId) => {
       // 更新格式
       newScheduleForm.value.format = templateSchedule.data.format
 
+      // 更新周偏移量
       newScheduleForm.value.weekOffset = templateSchedule.data.weekOffset || 0
 
       // 如果是本月周格式，设置选中的周
@@ -5297,6 +5308,17 @@ watch(() => newScheduleForm.value.template, (newTemplateId) => {
       if (!isEditMode.value) {
         newScheduleForm.value.title = templateSchedule.data.title
       }
+
+      // 更新主播logo相关设置
+      newScheduleForm.value.logoPosition = templateSchedule.data.logoPosition || 'none'
+      newScheduleForm.value.logoStreamers = templateSchedule.data.logoStreamers || []
+      
+      // 更新样式设置
+      if (templateSchedule.style) {
+        newScheduleForm.value.style = {
+          ...templateSchedule.style
+        }
+      }
       
       // 提示用户排班表格式已根据模板自动设置
       ElMessage({
@@ -5304,6 +5326,28 @@ watch(() => newScheduleForm.value.template, (newTemplateId) => {
         type: 'info',
         duration: 2000
       })
+    }
+  } else {
+    // 如果取消选择模板，重置表单为默认值（除非是编辑模式）
+    if (!isEditMode.value) {
+      newScheduleForm.value = {
+        template: '',
+        format: 'current_week',
+        title: '一周排班表',
+        weekOffset: 0,
+        logoPosition: 'none',
+        logoStreamers: [],
+        style: {
+          font: 'AlibabaSans-Regular',
+          themeColor: '#409EFF',
+          themeStyle: 'top-weekday',
+          weekdayLayout: 'single',
+          backgroundImage: null,
+          borderWidth: '1',
+          titleFontSize: '24px',
+          weekdayFontSize: '16px'
+        }
+      }
     }
   }
 })
