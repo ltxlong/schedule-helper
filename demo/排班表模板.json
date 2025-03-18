@@ -1,9 +1,9 @@
 [
   {
-    "id": 1742029381507,
+    "id": 1742326418918,
     "name": "一周排班表_四禧丸子",
     "description": "base",
-    "createTime": "2025-03-15T09:03:01.507Z",
+    "createTime": "2025-03-18T19:33:38.918Z",
     "data": {
       "schedule": {
         "data": {
@@ -18,7 +18,9 @@
             "恬豆",
             "又一"
           ],
-          "source": "template"
+          "source": "template",
+          "weekStart": "03.10",
+          "weekOffset": 0
         },
         "style": {
           "font": "HarmonyOS_Sans_Black",
