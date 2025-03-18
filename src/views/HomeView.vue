@@ -1370,6 +1370,20 @@
               <el-radio :value="'next_month'">下个月</el-radio>
             </el-radio-group>
             
+            <!-- 本周选择下拉框 -->
+            <el-select
+              v-if="newScheduleForm.format === 'current_week'"
+              v-model="newScheduleForm.weekOffset"
+              class="w-full"
+              placeholder="请选择周"
+              :disabled="!!newScheduleForm.template"
+            >
+              <el-option :value="0" label="本周" />
+              <el-option :value="1" label="下周" />
+              <el-option :value="2" label="下下周" />
+              <el-option :value="3" label="下下下周" />
+            </el-select>
+            
             <!-- 本月周选择下拉框 -->
             <el-select
               v-if="newScheduleForm.format === 'month_week'"
@@ -3509,6 +3523,7 @@ const newScheduleForm = ref({
   template: '',
   format: 'current_week',
   title: '一周排班表',
+  weekOffset: 0, // 添加周偏移量
   logoPosition: 'none', // 添加: 主播logo显示位置，可选值：none、left、center、right
   logoStreamers: [], // 添加: 要显示logo的成员列表
   style: {
@@ -3734,6 +3749,7 @@ const handleCreateSchedule = async () => {
 
     const today = new Date();
     let dateRange = '';
+    let weekStart = '';
     
     switch (newScheduleForm.value.format) {
       case 'current_week': {
@@ -3742,11 +3758,16 @@ const handleCreateSchedule = async () => {
         // 获取本周一的日期
         const dayOfWeek = today.getDay() || 7
         monday.setDate(today.getDate() - dayOfWeek + 1)
+        // 根据weekOffset调整日期
+        monday.setDate(monday.getDate() + (newScheduleForm.value.weekOffset * 7))
         const endDate = new Date(monday)
         endDate.setDate(monday.getDate() + 6)
         dateRange = `${monday.getFullYear()}.${String(monday.getMonth() + 1).padStart(2, '0')}.${String(monday.getDate()).padStart(2, '0')}–${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')}`
         // 初始化周视图数据
         weekDays.value = getWeekDays(monday)
+
+        weekStart = `${monday.getMonth() + 1}.${monday.getDate()}`
+
         // 只有在非编辑模式下才重新初始化周排班表数据
         if (!isEditMode.value) {
           weekScheduleData.value = [
@@ -3874,6 +3895,11 @@ const handleCreateSchedule = async () => {
       updateThemeColorRGB()
     }
     
+    if (newScheduleForm.value.format === 'current_week') {
+      currentSchedule.value.data.weekStart = weekStart
+      currentSchedule.value.data.weekOffset = newScheduleForm.value.weekOffset || 0
+    }
+
     ElMessage({
       type: 'success',
       message: isEditMode.value ? '排班表已更新' : '排班表已创建'
@@ -4610,6 +4636,10 @@ const saveAsHistory = async () => {
       const weekStart = weekDays.value[0].date
       history.data.data.weekStart = weekStart
     }
+
+    if (currentSchedule.value.data.format === 'current_week') {
+      history.data.data.weekOffset = currentSchedule.value.data.weekOffset || 0
+    }
     
     // 从本地存储获取历史记录
     const histories = JSON.parse(localStorage.getItem('scheduleHistories') || '[]')
@@ -4664,11 +4694,43 @@ const editSchedule = () => {
     template: '',
     format: currentSchedule.value.data.format,
     title: currentSchedule.value.data.title,
-    logoPosition: currentSchedule.value.data.logoPosition || 'none', // 加载已有的主播logo显示位置设置
-    logoStreamers: currentSchedule.value.data.logoStreamers || [], // 加载已有的主播logo成员列表设置
-    style: { ...currentSchedule.value.style },
-    weekdayFontSize: currentSchedule.value.style.weekdayFontSize || '16px' // 加载已有的星期字体大小设置
+    weekOffset: 0, // 默认设置为本周
+    logoPosition: currentSchedule.value.data.logoPosition || 'none',
+    logoStreamers: currentSchedule.value.data.logoStreamers || [],
+    style: {
+      ...currentSchedule.value.style,
+      weekdayFontSize: currentSchedule.value.style.weekdayFontSize || '16px'
+    }
   };
+  
+  // 如果是周视图，计算weekOffset
+  if (currentSchedule.value.data.format.includes('week') && currentSchedule.value.data.weekStart) {
+    const [startMonth, startDay] = currentSchedule.value.data.weekStart.split('.').map(Number);
+    const now = new Date();
+    const today = new Date();
+    const monday = new Date(today);
+    const dayOfWeek = today.getDay() || 7;
+    monday.setDate(today.getDate() - dayOfWeek + 1);
+    
+    const savedDate = new Date(now.getFullYear(), startMonth - 1, startDay);
+    const currentMonday = new Date(monday);
+    
+    // 计算周差
+    const weekDiff = Math.round((savedDate - currentMonday) / (7 * 24 * 60 * 60 * 1000));
+    
+    // 如果周差在0-3之间，设置对应的weekOffset
+    if (weekDiff > 0 && weekDiff <= 3) {
+      newScheduleForm.value.weekOffset = weekDiff;
+    } else if (weekDiff > 3) {
+      // 如果超过3周，默认设置为3周
+      newScheduleForm.value.weekOffset = 3;
+    } else {
+      // 如果是过去的日期，或者其他情况，默认设置为本周
+      newScheduleForm.value.weekOffset = 0;
+    }
+
+  }
+
   newScheduleDialogVisible.value = true;
 }
 
@@ -5223,7 +5285,9 @@ watch(() => newScheduleForm.value.template, (newTemplateId) => {
       
       // 更新格式
       newScheduleForm.value.format = templateSchedule.data.format
-      
+
+      newScheduleForm.value.weekOffset = templateSchedule.data.weekOffset || 0
+
       // 如果是本月周格式，设置选中的周
       if (templateSchedule.data.format === 'month_week') {
         selectedMonthWeek.value = templateSchedule.data.selectedWeek || 1
