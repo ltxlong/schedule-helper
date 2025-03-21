@@ -4659,11 +4659,9 @@ const saveAsHistory = async () => {
       return groups
     }, {})
     
-    // 如果当天已有记录，只保留最新的5条
     if (groupedHistories[today]) {
       groupedHistories[today].push(history)
       groupedHistories[today].sort((a, b) => b.id - a.id) // 按时间戳降序排序
-      groupedHistories[today] = groupedHistories[today].slice(0, 5) // 只保留前5条
     } else {
       groupedHistories[today] = [history]
     }
