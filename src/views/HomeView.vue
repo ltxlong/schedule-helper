@@ -110,7 +110,7 @@
           :style="{
             '--schedule-font-family': currentSchedule.style.font,
             backgroundImage: currentSchedule.style.backgroundImage ? `url(${currentSchedule.style.backgroundImage})` : 'none',
-            backgroundSize: 'cover',
+            backgroundSize: '100% 100%',
             backgroundPosition: 'center'
           }"
         >
@@ -133,7 +133,7 @@
               >
                 {{ currentSchedule.data.title }}
               </h2>
-              <p :style="{ color: currentSchedule.style.themeColor }">{{ currentSchedule.data.dateRange }}</p>
+              <p :style="{ color: currentSchedule.style.themeColor }" style="filter: opacity(50%)">{{ currentSchedule.data.dateRange }}</p>
             </div>
             
             <!-- 周排班表 -->
@@ -186,7 +186,7 @@
                           :data-cell-id="'header-' + index"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                       <template v-else>
@@ -200,7 +200,7 @@
                           :data-cell-id="'header-' + index"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                     </tr>
@@ -530,7 +530,7 @@
                           :data-cell-id="'header-' + (index + 4)"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
                         <td 
@@ -730,7 +730,7 @@
                         :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                       >
                         <div class="font-medium">{{ day.name }}</div>
-                        <div class="text-sm opacity-75">{{ day.date }}</div>
+                        <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                       </th>
                       <td v-for="(streamer, streamerIndex) in streamers" :key="streamer.id"
                         class="border"
@@ -770,7 +770,7 @@
                         :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                       >
                         <div class="font-medium">{{ day.name }}</div>
-                        <div class="text-sm opacity-75">{{ day.date }}</div>
+                        <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                       </th>
                       <td v-for="timeIndex in 2" :key="timeIndex"
                         class="border"
@@ -1643,7 +1643,7 @@
                 >
                   {{ currentViewTemplate.data.schedule.data?.title }}
                 </h2>
-                <p :style="{ color: currentViewTemplate.data.schedule.style?.themeColor }">
+                <p :style="{ color: currentViewTemplate.data.schedule.style?.themeColor }" style="filter: opacity(50%)">
                   {{ currentViewTemplate.data.schedule.data?.dateRange }}
                 </p>
               </div>
@@ -1696,7 +1696,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                       <template v-else>
@@ -1710,7 +1710,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                     </tr>
@@ -2001,7 +2001,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm opacity-75">{{ day.date }}</div>
+                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
                         <td 
@@ -3314,6 +3314,23 @@ const exportAsImage = async () => {
     clone.style.display = 'flex'
     clone.style.backgroundColor = originalStyles.backgroundColor
     clone.style.boxSizing = 'border-box'
+
+    // 设置background-image为none，使用img元素可以让导出更加清晰
+    const bgImgElement = document.createElement('img')
+    bgImgElement.src = clone.style.backgroundImage.replace(/url\((['"])?(.*?)\1\)/, '$2')
+    bgImgElement.style.position = 'absolute'
+    bgImgElement.style.width = '100%'
+    bgImgElement.style.height = '100%'
+    bgImgElement.style.objectFit = 'cover'
+    bgImgElement.style.objectPosition = 'center'
+    bgImgElement.style.zIndex = '-1'
+    bgImgElement.style.top = '0'
+    bgImgElement.style.left = '0'
+    clone.appendChild(bgImgElement)
+    clone.style.backgroundImage = 'none'
+    
+    // 添加克隆元素到外层容器中
+    outerContainer.appendChild(clone)
     
     // 如果是手机模式，应用电脑模式的样式
     if (isMobileView) {
@@ -3466,10 +3483,10 @@ const exportAsImage = async () => {
     outerContainer.appendChild(clone)
     
     const options = {
-      scale: 8,
+      scale: 3,
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff',
+      backgroundColor: "#ffffff",
       logging: false,
       width: isMobileView ? 1024 : elementWidth, // 如果是手机模式，使用固定桌面宽度
       height: isMobileView ? null : elementHeight, // 移动设备上高度自适应
@@ -6183,6 +6200,7 @@ const handleExportMember = () => {
   padding: 2rem;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .schedule-content {
