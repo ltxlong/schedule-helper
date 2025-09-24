@@ -133,7 +133,7 @@
               >
                 {{ currentSchedule.data.title }}
               </h2>
-              <p :style="{ color: currentSchedule.style.themeColor }" style="filter: opacity(50%)">{{ currentSchedule.data.dateRange }}</p>
+              <p class="the-date-text-color-filter-opacity" :style="{ color: currentSchedule.style.themeColor }" style="filter: opacity(50%)">{{ currentSchedule.data.dateRange }}</p>
             </div>
             
             <!-- 周排班表 -->
@@ -186,7 +186,7 @@
                           :data-cell-id="'header-' + index"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                       <template v-else>
@@ -200,7 +200,7 @@
                           :data-cell-id="'header-' + index"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                     </tr>
@@ -530,7 +530,7 @@
                           :data-cell-id="'header-' + (index + 4)"
                         >
                           <div :style="{ fontSize: currentSchedule.style.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
                         <td 
@@ -730,7 +730,7 @@
                         :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                       >
                         <div class="font-medium">{{ day.name }}</div>
-                        <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                        <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                       </th>
                       <td v-for="(streamer, streamerIndex) in streamers" :key="streamer.id"
                         class="border"
@@ -770,7 +770,7 @@
                         :style="{ borderColor: currentSchedule.style.themeColor, color: currentSchedule.style.themeColor }"
                       >
                         <div class="font-medium">{{ day.name }}</div>
-                        <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                        <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                       </th>
                       <td v-for="timeIndex in 2" :key="timeIndex"
                         class="border"
@@ -1643,7 +1643,7 @@
                 >
                   {{ currentViewTemplate.data.schedule.data?.title }}
                 </h2>
-                <p :style="{ color: currentViewTemplate.data.schedule.style?.themeColor }" style="filter: opacity(50%)">
+                <p class="the-date-text-color-filter-opacity" :style="{ color: currentViewTemplate.data.schedule.style?.themeColor }" style="filter: opacity(50%)">
                   {{ currentViewTemplate.data.schedule.data?.dateRange }}
                 </p>
               </div>
@@ -1696,7 +1696,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                       <template v-else>
@@ -1710,7 +1710,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                       </template>
                     </tr>
@@ -2001,7 +2001,7 @@
                           }"
                         >
                           <div :style="{ fontSize: currentViewTemplate?.data?.schedule?.style?.weekdayFontSize }">{{ day.name }}</div>
-                          <div class="text-sm" style="filter: opacity(50%)">{{ day.date }}</div>
+                          <div class="text-sm the-date-text-color-filter-opacity" style="filter: opacity(50%)">{{ day.date }}</div>
                         </th>
                         <!-- 添加右侧合并单元格，占据表头行+两行内容 -->
                         <td 
@@ -3359,7 +3359,16 @@ const exportAsImage = async () => {
     
     const originalContent = element.querySelector('.schedule-content')
     const computedStyle = window.getComputedStyle(originalContent)
+    const themeColorRGB = getThemeColorRGB(currentSchedule.value.style.themeColor)
     
+    // 处理日期文本颜色透明度
+    const dateColorTexts = clone.querySelectorAll('.the-date-text-color-filter-opacity')
+    if (dateColorTexts) {
+      dateColorTexts.forEach(el => {
+        el.style.color = `rgba(${themeColorRGB}, 0.5)`
+      })
+    }
+
     const scheduleContent = clone.querySelector('.schedule-content')
     if (scheduleContent) {
       scheduleContent.style.transform = isMobileView ? 'none' : computedStyle.transform
@@ -3372,7 +3381,6 @@ const exportAsImage = async () => {
     }
     
     // 处理表格边框
-    
     const scheduleTable = clone.querySelector('.schedule-grid')
     if (scheduleTable) {
       const borderWidth = parseInt(currentSchedule.value.style.borderWidth)
@@ -3444,7 +3452,6 @@ const exportAsImage = async () => {
           // 处理休息文本的样式
           const restText = cell.querySelector('.rest-text')
           if (restText) {
-            const themeColorRGB = getThemeColorRGB(currentSchedule.value.style.themeColor)
             restText.style.backgroundColor = `rgba(${themeColorRGB}, 0.5)`
             restText.style.border = `4px solid rgba(${themeColorRGB}, 0.2)`
             restText.style.boxShadow = `0 0 0 2px rgba(${themeColorRGB}, 0.5)`
