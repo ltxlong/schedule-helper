@@ -4853,8 +4853,8 @@ watch(newScheduleDialogVisible, (val) => {
 
 // 添加缩放相关的状态和方法
 const scale = ref(100)
-const MIN_SCALE = 50
-const MAX_SCALE = 150
+const MIN_SCALE = 10
+const MAX_SCALE = 1000
 
 const handleZoomIn = () => {
   if (scale.value < MAX_SCALE) {
