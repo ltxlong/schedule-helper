@@ -57,3 +57,10 @@ npm run dev
 - 设置构建输出目录：`dist`  （vercel部署的时候默认了，无需再手动设置）
 - 添加环境变量（配置登录密码）：
   - `ACCESS_PASSWORD`
+ 
+部署到deno deploy：
+- new app
+- 连接 Git 仓库，并且选择本项目
+- Install command设置为空，Build command设置为deno task build，Entrypoint设置为main.ts，Runtime Working Directory设置为空
+- 添加环境变量（配置登录密码）：
+  - `ACCESS_PASSWORD`
